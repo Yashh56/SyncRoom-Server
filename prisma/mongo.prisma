@@ -1,0 +1,41 @@
+// ---------- MONGO DB ----------
+
+generator client_mongo {
+    provider = "prisma-client-js"
+    output   = "./generated/mongo"
+}
+
+datasource mongo {
+    provider = "mongodb"
+    url      = env("MONGODB_URL")
+}
+
+// model Chat {
+//     id           String   @id @default(auto()) @map("_id") @mongo.ObjectId
+//     isGroup      Boolean
+//     roomId       String? // only for group chat
+//     participants String[] // only for private 1-on-1 or small group chats
+//     createdAt    DateTime @default(now())
+
+//     @@index([roomId])
+// }
+
+model Message {
+    id           String      @id  @default(auto()) @map("_id") @mongo.ObjectId
+    chatId       String
+    senderId     String
+    senderName   String
+    senderAvatar String
+    messageType  MessageType
+    content      String
+    seenBy       String[] // user IDs
+    createdAt    DateTime    @default(now())
+}
+
+enum MessageType {
+    TEXT
+    IMAGE
+    VIDEO
+    FILE
+    AUDIO
+}

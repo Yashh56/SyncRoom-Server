@@ -1,0 +1,90 @@
+// ---------- POSTGRES DB ----------
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client" // optional
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  image     String?
+  googleId  String?  @unique
+  githubId  String?  @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  rooms RoomMember[]
+  calls Call[]       @relation("CallParticipants")
+}
+
+model Room {
+  id         String       @id @default(uuid())
+  name       String       @unique
+  inviteCode String       @unique
+  mode       String
+  banner     String?
+  createdBy  String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  members    RoomMember[]
+  Materials  Material[]
+  Chat       Chat[]
+}
+
+model RoomMember {
+  id       String   @id @default(uuid())
+  role     Role
+  user     User     @relation(fields: [userId], references: [id])
+  userId   String
+  room     Room     @relation(fields: [roomId], references: [id])
+  roomId   String
+  joinedAt DateTime @default(now())
+
+  @@unique([userId, roomId])
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Chat {
+  id           String   @id @default(uuid())
+  isGroup      Boolean
+  roomId       String?  @unique
+  room         Room?    @relation(fields: [roomId], references: [id])
+  participants String[] // only for private 1-on-1 or small group chats
+  createdAt    DateTime @default(now())
+
+  @@index([roomId])
+}
+
+model Material {
+  id            String    @id @default(uuid())
+  title         String
+  description   String
+  dueDate       DateTime?
+  attachmentUrl String?
+  room          Room      @relation(fields: [roomId], references: [id])
+  roomId        String
+  createdAt     DateTime  @default(now())
+}
+
+model Call {
+  id           String    @id @default(uuid())
+  roomId       String?
+  callerId     String
+  receiverId   String?
+  status       String
+  startedAt    DateTime  @default(now())
+  endedAt      DateTime?
+  participants User[]    @relation("CallParticipants")
+}
