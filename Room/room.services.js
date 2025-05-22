@@ -2,7 +2,7 @@ import { joinChat, startChat } from "../Chats/chat.services.js";
 import { mongo, sql } from "../utils/db.js";
 import { generateInviteCode } from "../utils/generateInviteCode.js";
 
-export async function createRoom(name, userId, mode, banner) {
+export async function createRoom(name, userId, mode, banner, description) {
   const inviteCode = generateInviteCode();
   console.log(userId);
   const user = await sql.user.findUnique({
@@ -21,6 +21,7 @@ export async function createRoom(name, userId, mode, banner) {
       inviteCode,
       banner,
       mode,
+      description,
       createdBy: userId,
       members: {
         create: {
@@ -82,7 +83,11 @@ export async function getRoom(id) {
       id: id,
     },
     include: {
-      members: true,
+      members: {
+        include: {
+          user: true,
+        },
+      },
       Materials: true,
       Chat: true,
     },
@@ -125,42 +130,44 @@ export async function leaveRoom(roomId, userId) {
 
 export async function deleteRoom(roomId, userId) {
   const room = await sql.room.findUnique({
-    where: {
-      id: roomId,
-    },
+    where: { id: roomId },
     include: {
-      members: true,
+      members: {
+        include: {
+          user: true,
+        },
+      },
       Materials: true,
+      Chat: true,
     },
   });
+
   if (!room) throw new Error("Room not found");
+
   const isAdmin = room.members.find(
     (m) => m.userId === userId && m.role === "ADMIN"
   );
   if (!isAdmin) throw new Error("You are not an admin of this room");
 
+  // Step 1: Delete related records
   await sql.roomMember.deleteMany({
-    where: {
-      roomId,
-    },
-  });
-  await sql.material.deleteMany({
-    where: {
-      roomId,
-    },
+    where: { roomId },
   });
 
-  await mongo.chat.deleteMany({
-    where: {
-      roomId,
-    },
+  await sql.material.deleteMany({
+    where: { roomId },
   });
-  await sql.room.delete({
-    where: {
-      id: roomId,
-    },
+
+  await sql.chat.deleteMany({
+    where: { roomId },
   });
-  return room;
+
+  // Step 2: Delete the room
+  const deletedRoom = await sql.room.delete({
+    where: { id: roomId },
+  });
+
+  return deletedRoom;
 }
 
 export async function updateRoom(roomId, userId, name) {
@@ -183,6 +190,9 @@ export async function updateRoom(roomId, userId, name) {
     },
     data: {
       name,
+      description,
+      banner,
+      mode,
     },
   });
   return updatedRoom;

@@ -11,10 +11,10 @@ import {
 } from "./room.services.js";
 
 export const createRoomHandler = async (req, res) => {
-  const { name, mode, banner } = req.body;
+  const { name, mode, banner, description } = req.body;
   const userId = req.user.id;
   try {
-    const room = await createRoom(name, userId, mode, banner);
+    const room = await createRoom(name, userId, mode, banner, description);
     return res.status(201).json({
       status: "success",
       data: room,
@@ -62,10 +62,10 @@ export const joinRoomHandler = async (req, res) => {
 };
 
 export const leaveRoomHandler = async (req, res) => {
-  const { roomId, userId } = req.body;
+  const { id, userId } = req.body;
 
   try {
-    const room = await leaveRoom(roomId, userId);
+    const room = await leaveRoom(id, userId);
     return res.status(200).json({
       status: "success",
       data: room,
@@ -79,11 +79,11 @@ export const leaveRoomHandler = async (req, res) => {
 };
 
 export const deleteRoomHandler = async (req, res) => {
-  const { roomId } = req.params;
-  const { userId } = req.body;
+  const { id } = req.params;
+  const userId = req.user.id;
 
   try {
-    const room = await deleteRoom(roomId, userId);
+    const room = await deleteRoom(id, userId);
     return res.status(200).json({
       status: "success",
       data: room,
@@ -97,11 +97,12 @@ export const deleteRoomHandler = async (req, res) => {
 };
 
 export const updateRoomHandler = async (req, res) => {
-  const { roomId } = req.params;
-  const { name, userId } = req.body;
+  const { id } = req.params;
+  const { name, description, banner, mode } = req.body;
+  const userId = req.user.id;
 
   try {
-    const room = await updateRoom(roomId, name, userId);
+    const room = await updateRoom(id, name, userId, mode, banner, description);
     return res.status(200).json({
       status: "success",
       data: room,

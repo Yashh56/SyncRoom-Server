@@ -26,17 +26,18 @@ model User {
 }
 
 model Room {
-  id         String       @id @default(uuid())
-  name       String       @unique
-  inviteCode String       @unique
-  mode       String
-  banner     String?
-  createdBy  String
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime     @updatedAt
-  members    RoomMember[]
-  Materials  Material[]
-  Chat       Chat[]
+  id          String       @id @default(uuid())
+  name        String       @unique
+  inviteCode  String       @unique
+  mode        String
+  banner      String?
+  description String?
+  createdBy   String
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  members     RoomMember[]
+  Materials   Material[]
+  Chat        Chat[]
 }
 
 model RoomMember {
