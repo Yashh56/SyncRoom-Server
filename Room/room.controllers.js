@@ -108,6 +108,7 @@ export const updateRoomHandler = async (req, res) => {
       data: room,
     });
   } catch (error) {
+    console.log(error)
     res.status(500).json({
       status: "error",
       message: error.message,
@@ -141,7 +142,8 @@ export const getAllJoinedRoomsHandler = async (req, res) => {
 
 export const getAllPublicRoomsHandler = async (req, res) => {
   try {
-    const rooms = await getPublicRooms();
+    const userId = req.user.id;
+    const rooms = await getPublicRooms(userId);
     if (!rooms) {
       return res.status(200).json({
         status: "success",

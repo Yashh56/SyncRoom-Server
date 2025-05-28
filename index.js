@@ -5,8 +5,8 @@ import http from "http";
 import userRoutes from "./User/user.routes.js";
 import roomRoutes from "./Room/room.routes.js";
 import chatsRoutes from "./Chats/chat.routes.js";
+import materialsRoutes from "./Materials/materials.routes.js";
 import { initWebSocketServer } from "./websocket/index.js";
-
 import passportConfig from "./utils/passport.js";
 import passport from "passport";
 import session from "express-session";
@@ -49,6 +49,7 @@ app.use(passport.session());
 app.use("/auth", userRoutes);
 app.use("/room", roomRoutes);
 app.use("/chat", chatsRoutes);
+app.use("/materials", materialsRoutes);
 
 app.get("/check", isAuthenticated, (req, res) => {
   console.log("User authenticated:", req.user);

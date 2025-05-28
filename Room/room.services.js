@@ -170,7 +170,14 @@ export async function deleteRoom(roomId, userId) {
   return deletedRoom;
 }
 
-export async function updateRoom(roomId, userId, name) {
+export async function updateRoom(
+  roomId,
+  name,
+  userId,
+  mode,
+  banner,
+  description
+) {
   const room = await sql.room.findUnique({
     where: {
       id: roomId,
@@ -212,13 +219,17 @@ export async function getAllJoinedRooms(userId) {
   return rooms;
 }
 
-export async function getPublicRooms() {
+export async function getPublicRooms(userId) {
   const rooms = await sql.room.findMany({
     where: {
       mode: "PUBLIC",
+      members: {
+        none: {
+          userId: userId,
+        },
+      },
     },
   });
-  if (!rooms) return [];
   return rooms;
 }
 
