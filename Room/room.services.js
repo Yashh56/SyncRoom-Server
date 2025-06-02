@@ -245,3 +245,22 @@ export async function getRoomMembers(roomId) {
   if (!room) throw new Error("Room not found");
   return room;
 }
+
+export async function getRoomByInviteCode(inviteCode) {
+  const room = await sql.room.findUnique({
+    where: {
+      inviteCode: inviteCode,
+    },
+    include: {
+      members: {
+        include: {
+          user: true,
+        },
+      },
+      Materials: true,
+      Chat: true,
+    },
+  });
+  if (!room) throw new Error("Room not found");
+  return room;
+}

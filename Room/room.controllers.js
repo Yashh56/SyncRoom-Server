@@ -4,6 +4,7 @@ import {
   getAllJoinedRooms,
   getPublicRooms,
   getRoom,
+  getRoomByInviteCode,
   getRoomMembers,
   joinRoom,
   leaveRoom,
@@ -178,3 +179,25 @@ export const getRoomMembersHandler = async (req, res) => {
     });
   }
 };
+
+export const getRoomByInviteCodeHandler = async (req, res) => {
+  const { inviteCode } = req.params;
+  try {
+    const room = await getRoomByInviteCode(inviteCode);
+    if (!room) {
+      return res.status(404).json({
+        status: "error",
+        message: "Room not found",
+      });
+    }
+    return res.status(200).json({
+      status: "success",
+      data: room,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+}

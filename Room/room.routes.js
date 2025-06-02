@@ -10,6 +10,7 @@ import {
   getAllJoinedRoomsHandler,
   getAllPublicRoomsHandler,
   getRoomMembersHandler,
+  getRoomByInviteCodeHandler,
 } from "./room.controllers.js";
 
 const router = e.Router();
@@ -21,6 +22,7 @@ router.get("/members/:id", isAuthenticated, getRoomMembersHandler);
 router.get("/details/:id", isAuthenticated, getRoomHandler);
 
 router.post("/join", isAuthenticated, joinRoomHandler);
+router.get("/invite/:inviteCode", isAuthenticated, getRoomByInviteCodeHandler);
 router.post("/leave", isAuthenticated, leaveRoomHandler);
 router.put("/:id", isAuthenticated, updateRoomHandler);
 router.delete("/:id", isAuthenticated, deleteRoomHandler);
