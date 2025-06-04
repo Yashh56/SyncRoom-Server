@@ -32,7 +32,7 @@ export default function (passport) {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:5000/auth/google/callback",
+        callbackURL: "https://syncroom-server.onrender.com/auth/google/callback",
       },
       async (accessToken, refreshToken, profile, done) => {
         try {

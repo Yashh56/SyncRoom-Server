@@ -63,7 +63,7 @@ app.use("/auth", userRoutes);
 app.use("/room", roomRoutes);
 app.use("/chat", chatsRoutes);
 app.use("/materials", materialsRoutes);
-app.use("/", (req, res) => {
+app.use("/welcome", (req, res) => {
   res.send("Welcome to the SyncRoom API!");
 });
 
