@@ -40,6 +40,9 @@ app.use(
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+const isProd = process.env.NODE_ENV === "production";
+
 app.use(
   session({
     store: new RedisStore({ client: redis }),
@@ -48,8 +51,8 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false, // Set to true if using HTTPS
-      sameSite: "lax", // Adjust based on your needs
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
       maxAge: 1000 * 60 * 60 * 24,
     },
   })
