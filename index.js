@@ -87,11 +87,15 @@ app.get(
 
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login-failure" }),
-  (req, res) => {
-    // Send manual response so cookies are preserved
-    res.redirect("https://syncroom-zjox.onrender.com/");
-  }
+  (req, res, next) => {
+    console.log("Google callback query:", req.query); // 👈 log the code/state
+    next();
+  },
+  passport.authenticate("google", {
+    successRedirect: "https://syncroom-zjox.onrender.com/",
+    failureRedirect: "/login-failed", // Optional debug route
+    failureMessage: true,
+  })
 );
 
 async function startServer() {
