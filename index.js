@@ -19,12 +19,25 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "https://syncroom-zjox.onrender.com",
+];
+
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
@@ -50,6 +63,9 @@ app.use("/auth", userRoutes);
 app.use("/room", roomRoutes);
 app.use("/chat", chatsRoutes);
 app.use("/materials", materialsRoutes);
+app.use("/", (req, res) => {
+  res.send("Welcome to the SyncRoom API!");
+});
 
 app.get("/check", isAuthenticated, (req, res) => {
   console.log("User authenticated:", req.user);
@@ -69,7 +85,7 @@ app.get(
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/",
+    successRedirect: "https://syncroom-zjox.onrender.com/",
     failureMessage: "Login failed",
   })
 );
