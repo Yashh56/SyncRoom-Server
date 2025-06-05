@@ -64,6 +64,7 @@ app.use(
 
 passportConfig(passport);
 app.use(passport.initialize());
+app.set("trust proxy", true); // Trust the first proxy (needed for secure cookies in production)
 app.use(passport.session());
 
 app.use("/auth", userRoutes);
