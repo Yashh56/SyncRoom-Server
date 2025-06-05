@@ -44,7 +44,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 const isProd = process.env.NODE_ENV === "production";
-
+console.log(isProd ? "Production mode" : "Development mode");
 app.use(
   session({
     name: "syncroom.sid",
@@ -54,7 +54,9 @@ app.use(
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      maxAge: 5000 * 60 * 60 * 24,
+      secure: isProd, // ✅ Needed for cross-site cookie
+      sameSite: isProd ? "none" : "lax", // ✅ Allow cross-site cookie in prod
+      maxAge: 5000 * 60 * 60 * 24, // 5 days
     },
   })
 );
