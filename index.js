@@ -37,6 +37,7 @@ app.use(
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    exposedHeaders: ["Content-Type", "Authorization", "Set-Cookie"],
   })
 );
 
@@ -55,7 +56,7 @@ app.use(
     cookie: {
       httpOnly: true,
       secure: isProd, // ✅ Needed for cross-site cookie
-      sameSite: isProd ? "none" : "lax", // ✅ Allow cross-site cookie in prod
+      sameSite: isProd ? "None" : "lax", // ✅ Allow cross-site cookie in prod
       maxAge: 5000 * 60 * 60 * 24, // 5 days
     },
   })
