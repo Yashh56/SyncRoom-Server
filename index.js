@@ -27,27 +27,34 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: "https://syncroom-zjox.onrender.com",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
+// app.options("*", cors()); // Handle preflight requests for all routes
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 const isProd = process.env.NODE_ENV === "production";
 
 app.use(
   session({
+    name: "syncroom.sid",
     store: new RedisStore({ client: redis }),
     secret: process.env.JWT_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 1000 * 60 * 60 * 24, // 1 day
+      maxAge: 5000 * 60 * 60 * 24, // 5 days
     },
   })
 );
