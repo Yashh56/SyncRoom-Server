@@ -70,6 +70,5 @@ export async function currentUser(authHeader) {
   if (!user) {
     throw new Error("User not found");
   }
-  console.log(user);
   return user;
 }

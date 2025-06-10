@@ -37,7 +37,7 @@ router.post("/register", async (req, res) => {
           error: err.message,
         });
       }
-      console.log("User logged in successfully");
+      // console.log("User logged in successfully");
       res.redirect("/check");
     });
 

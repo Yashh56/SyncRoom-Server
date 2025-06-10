@@ -76,7 +76,7 @@ app.use("/welcome", (req, res) => {
 });
 
 app.get("/check", isAuthenticated, (req, res) => {
-  console.log("User authenticated:", req.user);
+  // console.log("User authenticated:", req.user);
   res.send("Server is running!", {
     user: req.user,
   });
@@ -93,7 +93,7 @@ app.get(
 app.get(
   "/auth/google/callback",
   (req, res, next) => {
-    console.log("Google callback query:", req.query); // 👈 log the code/state
+    // console.log("Google callback query:", req.query); // 👈 log the code/state
     next();
   },
   passport.authenticate("google", {

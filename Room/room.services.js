@@ -4,7 +4,6 @@ import { generateInviteCode } from "../utils/generateInviteCode.js";
 
 export async function createRoom(name, userId, mode, banner, description) {
   const inviteCode = generateInviteCode();
-  console.log(userId);
   const user = await sql.user.findUnique({
     where: {
       id: userId,
@@ -12,8 +11,7 @@ export async function createRoom(name, userId, mode, banner, description) {
   });
 
   if (!user) throw new Error("User not found");
-
-  console.log("Creating room for user:", userId, "with name:", name);
+  if (!name || name.trim() === "") throw new Error("Room name is required");
 
   const room = await sql.room.create({
     data: {
@@ -211,6 +209,13 @@ export async function getAllJoinedRooms(userId) {
       members: {
         some: {
           userId,
+        },
+      },
+    },
+    include: {
+      _count: {
+        select: {
+          members: true,
         },
       },
     },

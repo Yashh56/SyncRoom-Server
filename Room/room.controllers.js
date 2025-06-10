@@ -21,7 +21,6 @@ export const createRoomHandler = async (req, res) => {
       data: room,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       status: "error",
       message: error.message,
@@ -109,7 +108,6 @@ export const updateRoomHandler = async (req, res) => {
       data: room,
     });
   } catch (error) {
-    console.log(error)
     res.status(500).json({
       status: "error",
       message: error.message,
@@ -121,7 +119,6 @@ export const getAllJoinedRoomsHandler = async (req, res) => {
   const userId = req.user.id;
   try {
     const rooms = await getAllJoinedRooms(userId);
-    console.log(rooms);
     if (!rooms) {
       return res.status(200).json({
         status: "success",
@@ -133,7 +130,6 @@ export const getAllJoinedRoomsHandler = async (req, res) => {
       data: rooms,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       status: "error",
       message: error.message,
@@ -156,7 +152,6 @@ export const getAllPublicRoomsHandler = async (req, res) => {
       data: rooms,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       status: "error",
       message: error.message,
@@ -200,4 +195,4 @@ export const getRoomByInviteCodeHandler = async (req, res) => {
       message: error.message,
     });
   }
-}
+};
